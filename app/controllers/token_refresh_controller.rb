@@ -13,20 +13,21 @@ class TokenRefreshController < ApplicationController
   SYMMETRIC_KEY = Paseto::V4::Local.new(ikm: PASETO_SECRET_KEY)
 
   def refresh
-    old_token = request.headers['Authorization']&.split(' ')&.last.to_s
+    refresh_token = cookies.signed[:refresh_token]
+    debugger
   
-    if old_token.present?
+    if refresh_token.present?
       begin
-        result = SYMMETRIC_KEY.decode(old_token)
+        result = SYMMETRIC_KEY.decode(refresh_token)
         payload = result.claims
   
         if Time.at(payload['exp']) > Time.current
-          new_token = generate_paseto_token(User.find(payload['sub']))
+          new_access_token = generate_access_token(User.find(payload['sub']))
           render json: {
             status: { 
               code: 200,
               message: 'Token refreshed successfully.',
-              token: new_token
+              token: new_access_token
             }
           }, status: :ok
         else
@@ -42,10 +43,10 @@ class TokenRefreshController < ApplicationController
 
   private
 
-  def generate_paseto_token(current_user)
+  def generate_access_token(current_user)
     payload = {
       sub: current_user.id.to_s,
-      exp: 24.hours.from_now.to_i
+      exp: 15.minutes.from_now.to_i
     }
 
     SYMMETRIC_KEY.encode(payload)
