@@ -32,12 +32,14 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
-# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
-# gem "rack-cors"
-
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
+  gem 'devise', '~> 4.9.4'
+  gem 'rack-cors', '~> 2.0.2'
+  gem "ruby-paseto", '~> 0.1.2'
+  gem 'rbnacl', '~> 7.1.1'
+  gem 'jsonapi-serializer', '~> 2.2'
 end
 
 group :development do
